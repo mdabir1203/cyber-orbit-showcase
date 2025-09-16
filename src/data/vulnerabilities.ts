@@ -1016,6 +1016,320 @@ export const vulnerabilities: Vulnerability[] = [
     do: "Monitor anomalies",
     dont: "Allow unconstrained peripheral timing",
     category: "Side Channel"
+  },
+
+  // ====== INDUSTRY-SPECIFIC VULNERABILITIES ======
+
+  // ===== EMBEDDED SYSTEMS - POPULAR =====
+  {
+    number: 101,
+    title: "Unencrypted EEPROM Storage",
+    severity: "Medium",
+    summary: "Credentials stored in plaintext on EEPROM",
+    code: "eeprom_write(0x100, password, strlen(password));",
+    do: "Encrypt sensitive data before storage",
+    dont: "Store plaintext credentials in EEPROM",
+    category: "Embedded - Popular"
+  },
+  {
+    number: 102,
+    title: "Missing Flash Write Protection",
+    severity: "High",
+    summary: "Critical firmware sectors can be overwritten",
+    code: "flash_write(BOOT_SECTOR, malicious_code, size);",
+    do: "Enable flash write protection for critical sectors",
+    dont: "Allow unrestricted flash writes",
+    category: "Embedded - Popular"
+  },
+  {
+    number: 103,
+    title: "JTAG Port Left Enabled",
+    severity: "High",
+    summary: "Debug interface accessible in production",
+    code: "// JTAG pins accessible, no disable fuse",
+    do: "Disable JTAG in production builds",
+    dont: "Ship with debug interfaces enabled",
+    category: "Embedded - Popular"
+  },
+  {
+    number: 104,
+    title: "Weak MCU Lock Bits",
+    severity: "Medium",
+    summary: "Microcontroller memory protection insufficient",
+    code: "// Lock bits not set properly",
+    do: "Configure proper MCU protection fuses",
+    dont: "Leave default protection settings",
+    category: "Embedded - Popular"
+  },
+  {
+    number: 105,
+    title: "SPI Flash Unprotected",
+    severity: "High",
+    summary: "External flash memory accessible without auth",
+    code: "spi_flash_read(0x0, buffer, 1024);",
+    do: "Implement SPI flash protection mechanisms",
+    dont: "Allow unrestricted flash access",
+    category: "Embedded - Popular"
+  },
+
+  // ===== EMBEDDED SYSTEMS - SOPHISTICATED =====
+  {
+    number: 106,
+    title: "Power Analysis Key Extraction",
+    severity: "Critical",
+    summary: "Cryptographic keys leaked via power consumption",
+    code: "aes_encrypt(secret_key, plaintext, ciphertext);",
+    do: "Implement power masking and randomization",
+    dont: "Ignore power side-channel attacks",
+    category: "Embedded - Sophisticated"
+  },
+  {
+    number: 107,
+    title: "Clock Glitching Boot Bypass",
+    severity: "Critical",
+    summary: "Clock manipulation bypasses secure boot",
+    code: "if(verify_signature(firmware)) boot_firmware();",
+    do: "Implement clock glitch detection and redundancy",
+    dont: "Rely on single clock domain for security",
+    category: "Embedded - Sophisticated"
+  },
+  {
+    number: 108,
+    title: "Electromagnetic Fault Injection",
+    severity: "Critical",
+    summary: "EM pulses manipulate execution flow",
+    code: "if(auth_check() == SUCCESS) grant_access();",
+    do: "Add EM shielding and fault detection",
+    dont: "Ignore electromagnetic threats",
+    category: "Embedded - Sophisticated"
+  },
+  {
+    number: 109,
+    title: "Hardware Trojan in Custom ASIC",
+    severity: "Critical",
+    summary: "Malicious logic inserted during fabrication",
+    code: "// Hidden trigger in silicon",
+    do: "Use trusted foundries and post-fab verification",
+    dont: "Assume fabricated chips are clean",
+    category: "Embedded - Sophisticated"
+  },
+  {
+    number: 110,
+    title: "Secure Element API Misuse",
+    severity: "High",
+    summary: "Improper SE usage exposes keys",
+    code: "se_get_key(key_id, &key, &len); // key exposed",
+    do: "Keep keys within secure element operations",
+    dont: "Extract keys from secure elements",
+    category: "Embedded - Sophisticated"
+  },
+
+  // ===== IOT DEVICES - POPULAR =====
+  {
+    number: 111,
+    title: "Default WiFi Credentials",
+    severity: "High",
+    summary: "Devices shipped with default WiFi passwords",
+    code: "wifi_connect(\"IoTDevice\", \"password123\");",
+    do: "Force unique credential setup during onboarding",
+    dont: "Ship with default WiFi credentials",
+    category: "IoT - Popular"
+  },
+  {
+    number: 112,
+    title: "Unencrypted MQTT Communications",
+    severity: "Medium",
+    summary: "IoT data transmitted without encryption",
+    code: "mqtt_publish(\"sensor/data\", sensor_reading);",
+    do: "Use TLS/SSL for MQTT communications",
+    dont: "Send sensitive data over plain MQTT",
+    category: "IoT - Popular"
+  },
+  {
+    number: 113,
+    title: "Insecure OTA Update Mechanism",
+    severity: "High",
+    summary: "Firmware updates without proper verification",
+    code: "download_firmware(url); flash_write(firmware);",
+    do: "Verify signatures and use secure channels",
+    dont: "Flash unverified firmware updates",
+    category: "IoT - Popular"
+  },
+  {
+    number: 114,
+    title: "Weak Device Authentication",
+    severity: "Medium",
+    summary: "IoT devices use predictable identifiers",
+    code: "device_id = \"IoT_\" + mac_address;",
+    do: "Use cryptographically strong device identities",
+    dont: "Use predictable device identifiers",
+    category: "IoT - Popular"
+  },
+  {
+    number: 115,
+    title: "Exposed Admin Web Interface",
+    severity: "High",
+    summary: "Device management interface accessible remotely",
+    code: "if(request.path == \"/admin\") serve_admin();",
+    do: "Restrict admin access to local network only",
+    dont: "Expose admin interfaces to internet",
+    category: "IoT - Popular"
+  },
+
+  // ===== IOT DEVICES - SOPHISTICATED =====
+  {
+    number: 116,
+    title: "IoT Botnet Command Injection",
+    severity: "Critical",
+    summary: "Remote command execution via compromised protocols",
+    code: "system(mqtt_payload); // executing commands",
+    do: "Sanitize all external inputs and use allowlists",
+    dont: "Execute commands from external sources",
+    category: "IoT - Sophisticated"
+  },
+  {
+    number: 117,
+    title: "Cross-Protocol Attack",
+    severity: "High",
+    summary: "Exploiting interactions between different IoT protocols",
+    code: "zigbee_to_wifi_bridge(untrusted_data);",
+    do: "Validate data at protocol boundaries",
+    dont: "Trust data crossing protocol boundaries",
+    category: "IoT - Sophisticated"
+  },
+  {
+    number: 118,
+    title: "Mesh Network Poisoning",
+    severity: "High",
+    summary: "Malicious nodes corrupt mesh routing",
+    code: "mesh_route_update(malicious_route_info);",
+    do: "Implement mesh node authentication and routing validation",
+    dont: "Trust mesh routing updates blindly",
+    category: "IoT - Sophisticated"
+  },
+  {
+    number: 119,
+    title: "Device Shadow Manipulation",
+    severity: "High",
+    summary: "Cloud device state manipulated by attacker",
+    code: "update_device_shadow(fake_sensor_data);",
+    do: "Validate device shadow updates with device state",
+    dont: "Trust cloud shadow state without verification",
+    category: "IoT - Sophisticated"
+  },
+  {
+    number: 120,
+    title: "Supply Chain Firmware Tampering",
+    severity: "Critical",
+    summary: "Malicious firmware injected during manufacturing",
+    code: "// compromised firmware with backdoor",
+    do: "Implement firmware attestation and secure supply chain",
+    dont: "Assume firmware integrity from suppliers",
+    category: "IoT - Sophisticated"
+  },
+
+  // ===== CLOUD SYSTEMS - POPULAR =====
+  {
+    number: 121,
+    title: "Exposed S3 Bucket",
+    severity: "High",
+    summary: "Cloud storage bucket publicly accessible",
+    code: "s3_bucket.public_read = true;",
+    do: "Configure proper bucket access policies",
+    dont: "Make buckets publicly readable by default",
+    category: "Cloud - Popular"
+  },
+  {
+    number: 122,
+    title: "Hardcoded Cloud API Keys",
+    severity: "High",
+    summary: "API credentials embedded in source code",
+    code: "const AWS_KEY = 'AKIAIOSFODNN7EXAMPLE';",
+    do: "Use environment variables or secrets management",
+    dont: "Hardcode API keys in source code",
+    category: "Cloud - Popular"
+  },
+  {
+    number: 123,
+    title: "Overprivileged IAM Roles",
+    severity: "Medium",
+    summary: "Cloud roles granted excessive permissions",
+    code: "iam_policy = {\"Effect\": \"Allow\", \"Action\": \"*\"};",
+    do: "Apply principle of least privilege",
+    dont: "Grant wildcard permissions",
+    category: "Cloud - Popular"
+  },
+  {
+    number: 124,
+    title: "Unencrypted Database",
+    severity: "High",
+    summary: "Cloud database stored without encryption",
+    code: "rds_instance.encrypted = false;",
+    do: "Enable encryption at rest and in transit",
+    dont: "Store sensitive data unencrypted",
+    category: "Cloud - Popular"
+  },
+  {
+    number: 125,
+    title: "Missing Security Groups",
+    severity: "Medium",
+    summary: "Cloud resources exposed without network controls",
+    code: "security_group.ingress = \"0.0.0.0/0:22\";",
+    do: "Implement restrictive security group rules",
+    dont: "Allow unrestricted network access",
+    category: "Cloud - Popular"
+  },
+
+  // ===== CLOUD SYSTEMS - SOPHISTICATED =====
+  {
+    number: 126,
+    title: "Container Escape Vulnerability",
+    severity: "Critical",
+    summary: "Malicious code breaks out of container isolation",
+    code: "mount --bind /host/root /container/escape",
+    do: "Use secure container runtimes with proper isolation",
+    dont: "Run containers with excessive privileges",
+    category: "Cloud - Sophisticated"
+  },
+  {
+    number: 127,
+    title: "Serverless Cold Start Injection",
+    severity: "High",
+    summary: "Malicious code injected during function initialization",
+    code: "process.env.MALICIOUS_CODE = injected_payload;",
+    do: "Validate environment and initialization parameters",
+    dont: "Trust serverless environment variables blindly",
+    category: "Cloud - Sophisticated"
+  },
+  {
+    number: 128,
+    title: "Multi-Tenant Data Leakage",
+    severity: "Critical",
+    summary: "Tenant isolation failure exposes data",
+    code: "query = \"SELECT * FROM data WHERE user_id = '\" + user + \"'\";",
+    do: "Implement strong tenant isolation at all layers",
+    dont: "Rely solely on application-level tenant filtering",
+    category: "Cloud - Sophisticated"
+  },
+  {
+    number: 129,
+    title: "Kubernetes RBAC Bypass",
+    severity: "High",
+    summary: "Role-based access control circumvented",
+    code: "kubectl create clusterrolebinding admin --user=attacker",
+    do: "Implement defense-in-depth RBAC policies",
+    dont: "Rely on single-layer access controls",
+    category: "Cloud - Sophisticated"
+  },
+  {
+    number: 130,
+    title: "Cloud Metadata Service Exploitation",
+    severity: "Critical",
+    summary: "Instance metadata service used to escalate privileges",
+    code: "curl http://169.254.169.254/latest/meta-data/iam/",
+    do: "Restrict metadata service access and use IMDSv2",
+    dont: "Allow unrestricted metadata service access",
+    category: "Cloud - Sophisticated"
   }
 ];
 
@@ -1048,3 +1362,48 @@ export const getSeverityGlowColor = (severity: Vulnerability["severity"]) => {
       return "severity-medium-glow";
   }
 };
+
+export const vulnerabilityLevels = [
+  { 
+    level: "Level 1 – Basics", 
+    color: "#22c55e", 
+    icon: "🟢",
+    description: "Fundamental security issues"
+  },
+  { 
+    level: "Level 2 – Intermediate", 
+    color: "#facc15", 
+    icon: "🟡",
+    description: "More complex security vulnerabilities"
+  },
+  { 
+    level: "Level 3 – Complex/System-Level", 
+    color: "#ff5500", 
+    icon: "🔴",
+    description: "Advanced system-level security issues"
+  },
+  { 
+    level: "Level 4 – Advanced/Elite", 
+    color: "#aa00ff", 
+    icon: "🟣",
+    description: "Elite-level security vulnerabilities"
+  },
+  {
+    level: "Embedded Systems", 
+    color: "#00d4aa", 
+    icon: "🔧",
+    description: "Hardware and embedded security issues"
+  },
+  {
+    level: "IoT Devices", 
+    color: "#4f46e5", 
+    icon: "📡",
+    description: "Internet of Things security vulnerabilities"
+  },
+  {
+    level: "Cloud Systems", 
+    color: "#06b6d4", 
+    icon: "☁️",
+    description: "Cloud infrastructure security issues"
+  },
+];
